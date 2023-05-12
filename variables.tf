@@ -32,19 +32,19 @@ variable "solidblocks_base_url" {
 
 variable "backup_s3_bucket" {
   type        = string
-  description = "AWS bucket name for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
+  description = "AWS bucket name for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
   default     = null
 }
 
 variable "backup_s3_access_key" {
   type        = string
-  description = "AWS access key for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
+  description = "AWS access key for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
   default     = null
 }
 
 variable "backup_s3_secret_key" {
   type        = string
-  description = "AWS secret key for S3 backups. To enable S3 backups `backup_s3_bucket` `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
+  description = "AWS secret key for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
   default     = null
 }
 
@@ -71,12 +71,6 @@ variable "databases" {
   description = "A list of databases to create when the instance is initialized, for example: `{ id : \"database1\", user : \"user1\", password : \"password1\" }`{"
 }
 
-variable "extra_user_data" {
-  type        = string
-  description = "user data script that is executed after the database setup is completed"
-  default     = ""
-}
-
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
@@ -87,10 +81,4 @@ variable "solidblocks_version" {
   type        = string
   description = "used for integration tests to inject test versions"
   default     = "v0.0.93"
-}
-
-variable "labels" {
-  type        = map(any)
-  description = "A list of labels to be attached to the server instance."
-  default     = {}
 }
