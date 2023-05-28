@@ -32,19 +32,19 @@ variable "solidblocks_base_url" {
 
 variable "backup_s3_bucket" {
   type        = string
-  description = "AWS bucket name for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
+  description = "AWS bucket name for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
   default     = null
 }
 
 variable "backup_s3_access_key" {
   type        = string
-  description = "AWS access key for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
+  description = "AWS access key for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
   default     = null
 }
 
 variable "backup_s3_secret_key" {
   type        = string
-  description = "AWS secret key for S3 backups. To enable S3 backups 'backup_s3_bucket', 'backup_s3_access_key' and 'backup_s3_secret_key' have to be provided."
+  description = "AWS secret key for S3 backups. To enable S3 backups `backup_s3_bucket` `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
   default     = null
 }
 
@@ -71,6 +71,24 @@ variable "databases" {
   description = "A list of databases to create when the instance is initialized, for example: `{ id : \"database1\", user : \"user1\", password : \"password1\" }`{"
 }
 
+variable "extra_user_data" {
+  type        = string
+  description = "deprecated, please use pre_script/post_script"
+  default     = ""
+}
+
+variable "post_script" {
+  type        = string
+  description = "shell script that will be executed after the server configuration is executed"
+  default     = ""
+}
+
+variable "pre_script" {
+  type        = string
+  description = "shell script that will be executed before the server configuration is executed"
+  default     = ""
+}
+
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
@@ -81,4 +99,34 @@ variable "solidblocks_version" {
   type        = string
   description = "used for integration tests to inject test versions"
   default     = "v0.0.93"
+}
+
+variable "labels" {
+  type        = map(any)
+  description = "A list of labels to be attached to the server instance."
+  default     = {}
+}
+
+variable "public_net_ipv4_enabled" {
+  type        = bool
+  description = "enable/disable public ip addresses, see also https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server#public_net"
+  default     = true
+}
+
+variable "public_net_ipv6_enabled" {
+  type        = bool
+  description = "enable/disable public ip addresses, see also https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server#public_net"
+  default     = true
+}
+
+variable "network_id" {
+  type        = number
+  description = "network the created sever should be attached to, network_ip also needs to bet set in that case"
+  default     = 0
+}
+
+variable "network_ip" {
+  type        = string
+  description = "ip address in the attached network"
+  default     = null
 }
