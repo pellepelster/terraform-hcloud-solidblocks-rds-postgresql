@@ -1,6 +1,6 @@
 # RDS PostgreSQL
 
-See [documentation](https://pellepelster.github.io/solidblocks/hetzner/rds-postgresql/)  for more details and usage examples.
+See [documentation](https://pellepelster.github.io/solidblocks/hetzner/rds-postgresql/) for more details and usage examples.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
@@ -34,14 +34,22 @@ See [documentation](https://pellepelster.github.io/solidblocks/hetzner/rds-postg
 |------|-------------|------|---------|:--------:|
 | <a name="input_backup_full_calendar"></a> [backup\_full\_calendar](#input\_backup\_full\_calendar) | systemd timer spec for full backups | `string` | `"*-*-* 20:00:00"` | no |
 | <a name="input_backup_incr_calendar"></a> [backup\_incr\_calendar](#input\_backup\_incr\_calendar) | systemd timer spec for incremental backups | `string` | `"*-*-* *:00:55"` | no |
-| <a name="input_backup_s3_access_key"></a> [backup\_s3\_access\_key](#input\_backup\_s3\_access\_key) | AWS access key for S3 backups. To enable S3 backups 'backup\_s3\_bucket', 'backup\_s3\_access\_key' and 'backup\_s3\_secret\_key' have to be provided. | `string` | `null` | no |
-| <a name="input_backup_s3_bucket"></a> [backup\_s3\_bucket](#input\_backup\_s3\_bucket) | AWS bucket name for S3 backups. To enable S3 backups 'backup\_s3\_bucket', 'backup\_s3\_access\_key' and 'backup\_s3\_secret\_key' have to be provided. | `string` | `null` | no |
-| <a name="input_backup_s3_secret_key"></a> [backup\_s3\_secret\_key](#input\_backup\_s3\_secret\_key) | AWS secret key for S3 backups. To enable S3 backups 'backup\_s3\_bucket', 'backup\_s3\_access\_key' and 'backup\_s3\_secret\_key' have to be provided. | `string` | `null` | no |
+| <a name="input_backup_s3_access_key"></a> [backup\_s3\_access\_key](#input\_backup\_s3\_access\_key) | AWS access key for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided. | `string` | `null` | no |
+| <a name="input_backup_s3_bucket"></a> [backup\_s3\_bucket](#input\_backup\_s3\_bucket) | AWS bucket name for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided. | `string` | `null` | no |
+| <a name="input_backup_s3_secret_key"></a> [backup\_s3\_secret\_key](#input\_backup\_s3\_secret\_key) | AWS secret key for S3 backups. To enable S3 backups `backup_s3_bucket` `backup_s3_access_key` and `backup_s3_secret_key` have to be provided. | `string` | `null` | no |
 | <a name="input_backup_volume"></a> [backup\_volume](#input\_backup\_volume) | backup volume id | `string` | `0` | no |
 | <a name="input_data_volume"></a> [data\_volume](#input\_data\_volume) | data volume id | `number` | n/a | yes |
 | <a name="input_databases"></a> [databases](#input\_databases) | A list of databases to create when the instance is initialized, for example: `{ id : "database1", user : "user1", password : "password1" }`{ | `list(object({ id : string, user : string, password : string }))` | n/a | yes |
+| <a name="input_extra_user_data"></a> [extra\_user\_data](#input\_extra\_user\_data) | deprecated, please use pre\_script/post\_script | `string` | `""` | no |
+| <a name="input_labels"></a> [labels](#input\_labels) | A list of labels to be attached to the server instance. | `map(any)` | `{}` | no |
 | <a name="input_location"></a> [location](#input\_location) | hetzner location | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | unique name for the postgres rds instance | `string` | n/a | yes |
+| <a name="input_network_id"></a> [network\_id](#input\_network\_id) | network the created sever should be attached to, network\_ip also needs to bet set in that case | `number` | `0` | no |
+| <a name="input_network_ip"></a> [network\_ip](#input\_network\_ip) | ip address in the attached network | `string` | `null` | no |
+| <a name="input_post_script"></a> [post\_script](#input\_post\_script) | shell script that will be executed after the server configuration is executed | `string` | `""` | no |
+| <a name="input_pre_script"></a> [pre\_script](#input\_pre\_script) | shell script that will be executed before the server configuration is executed | `string` | `""` | no |
+| <a name="input_public_net_ipv4_enabled"></a> [public\_net\_ipv4\_enabled](#input\_public\_net\_ipv4\_enabled) | enable/disable public ip addresses, see also https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server#public_net | `bool` | `true` | no |
+| <a name="input_public_net_ipv6_enabled"></a> [public\_net\_ipv6\_enabled](#input\_public\_net\_ipv6\_enabled) | enable/disable public ip addresses, see also https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs/resources/server#public_net | `bool` | `true` | no |
 | <a name="input_server_type"></a> [server\_type](#input\_server\_type) | hetzner cloud server type | `string` | `"cx11"` | no |
 | <a name="input_solidblocks_base_url"></a> [solidblocks\_base\_url](#input\_solidblocks\_base\_url) | override base url for testing purposes | `string` | `"https://github.com"` | no |
 | <a name="input_solidblocks_cloud_init_version"></a> [solidblocks\_cloud\_init\_version](#input\_solidblocks\_cloud\_init\_version) | used for integration tests to inject test versions | `string` | `"v0.0.93"` | no |
@@ -53,4 +61,5 @@ See [documentation](https://pellepelster.github.io/solidblocks/hetzner/rds-postg
 | Name | Description |
 |------|-------------|
 | <a name="output_ipv4_address"></a> [ipv4\_address](#output\_ipv4\_address) | IpV4 address of the created server |
+| <a name="output_this_server_id"></a> [this\_server\_id](#output\_this\_server\_id) | Hetzner ID of the created server |
 <!-- END_TF_DOCS -->
