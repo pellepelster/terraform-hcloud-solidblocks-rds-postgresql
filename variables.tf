@@ -62,13 +62,13 @@ variable "backup_incr_calendar" {
 
 variable "server_type" {
   type        = string
-  description = "hetzner cloud server type"
+  description = "hetzner cloud server type, supports x86 and ARM architectures"
   default     = "cx11"
 }
 
 variable "databases" {
   type        = list(object({ id : string, user : string, password : string }))
-  description = "A list of databases to create when the instance is initialized, for example: `{ id : \"database1\", user : \"user1\", password : \"password1\" }`{"
+  description = "A list of databases to create when the instance is initialized, for example: `{ id : \"database1\", user : \"user1\", password : \"password1\" }`. Changing `user` and `password` is supported at any time, the provided config is translated into an config for the Solidblocks RDS PostgreSQL module (https://pellepelster.github.io/solidblocks/rds/index.html), please see https://pellepelster.github.io/solidblocks/rds/index.html#databases for more details of the database configuration."
 }
 
 variable "extra_user_data" {
@@ -92,13 +92,13 @@ variable "pre_script" {
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.15"
+  default     = "v0.1.16"
 }
 
 variable "solidblocks_rds_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.15"
+  default     = "v0.1.16"
 }
 
 variable "labels" {
