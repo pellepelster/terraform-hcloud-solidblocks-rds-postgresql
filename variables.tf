@@ -92,13 +92,13 @@ variable "pre_script" {
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.16"
+  default     = "v0.1.17"
 }
 
 variable "solidblocks_rds_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.16"
+  default     = "v0.1.17"
 }
 
 variable "labels" {
@@ -130,3 +130,36 @@ variable "network_ip" {
   description = "ip address in the attached network"
   default     = null
 }
+
+variable "ssl_enable" {
+  type        = bool
+  description = "enable automatic ssl certificate creation using LetsEncrypt"
+  default     = false
+}
+
+variable "ssl_email" {
+  type        = string
+  description = "email address to use for LetsEncrypt account creation"
+  default     = ""
+}
+
+variable "ssl_domains" {
+  type        = list(string)
+  description = "domains to use for generated certificates"
+  default     = []
+
+}
+
+variable "ssl_dns_provider" {
+  type        = string
+  description = "provider type to use for LetsEncrypt DNS challenge, see https://go-acme.github.io/lego/dns/ for available options"
+  default     = ""
+}
+
+variable "ssl_dns_provider_config" {
+  type        = map(string)
+  description = "environment configuration variable(s) to use for DNS provider selected via `ssl_dns_provider`, see documentation of selected provider for required configuration variables"
+  default     = {}
+}
+
+
