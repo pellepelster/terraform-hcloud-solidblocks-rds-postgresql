@@ -26,6 +26,7 @@ locals {
     ssl_dns_provider        = var.ssl_dns_provider
     ssl_dns_provider_config = var.ssl_dns_provider_config
     postgres_major_version  = var.postgres_major_version
+    postgres_extra_config   = var.postgres_extra_config == null ? "" : var.postgres_extra_config
 
     extra_user_data = var.extra_user_data
     pre_script      = var.pre_script

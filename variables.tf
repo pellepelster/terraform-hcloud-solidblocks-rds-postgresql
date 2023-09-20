@@ -5,17 +5,17 @@ variable "name" {
 
 variable "location" {
   type        = string
-  description = "hetzner location to use for provisioned resources"
+  description = "Hetzner location to use for provisioned resources"
 }
 
 variable "ssh_keys" {
   type        = list(number)
-  description = "ssh keys to privision for instance access"
+  description = "ssh keys to provision for instance access"
 }
 
 variable "server_type" {
   type        = string
-  description = "hetzner cloud server type, supports x86 and ARM architectures"
+  description = "Hetzner cloud server type, supports x86 and ARM architectures"
   default     = "cx11"
 }
 
@@ -85,6 +85,12 @@ variable "postgres_major_version" {
     condition     = var.postgres_major_version != 14 || var.postgres_major_version != 15
     error_message = "currently only version 14 or 15 is supported"
   }
+}
+
+variable "postgres_extra_config" {
+  type        = string
+  description = "Extra postgres configurations options for the postgresql.conf, see also https://pellepelster.github.io/solidblocks/rds/index.html#global -> DB_POSTGRES_EXTRA_CONFIG"
+  default     = null
 }
 
 variable "extra_user_data" {
@@ -181,12 +187,12 @@ variable "solidblocks_base_url" {
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.19"
+  default     = "v0.1.21"
 }
 
 variable "solidblocks_rds_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.19"
+  default     = "v0.1.21"
 }
 
