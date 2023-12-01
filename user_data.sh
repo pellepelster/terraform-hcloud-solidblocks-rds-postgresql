@@ -13,6 +13,7 @@ STORAGE_DEVICE_DATA="${storage_device_data}"
 SSL_ENABLE="${ssl_enable}"
 SSL_EMAIL="${ssl_email}"
 SSL_DNS_PROVIDER="${ssl_dns_provider}"
+SSL_ACME_SERVER="${ssl_acme_server}"
 
 SSL_DOMAINS=""
 %{ for domain in ssl_domains }
@@ -39,7 +40,8 @@ function install_prerequisites {
     docker-compose \
     ufw \
     uuid \
-    unattended-upgrades
+    unattended-upgrades \
+    postgresql-client
 }
 
 function configure_ufw {
@@ -66,7 +68,7 @@ local backup_type="$${1:-}"
 local backup_calendar="$${2:-}"
 cat <<-EOF
 [Unit]
-Description=full backup for %i
+Description=$${backup_type} backup for %i
 
 [Timer]
 OnCalendar=$${backup_calendar}
@@ -136,14 +138,31 @@ services:
       - "DB_USERNAME_${database.id}=${database.user}"
       - "DB_PASSWORD_${database.id}=${database.password}"
       %{~ endfor ~}
+      %{~ if db_admin_password != "" ~}
+      - "DB_ADMIN_PASSWORD=${db_admin_password}"
+      %{~ endif ~}
+      %{~ for key, value in environment_variables ~}
+      - "${key}=${value}"
+      %{~ endfor ~}
       %{~ if db_backup_s3_bucket != "" && db_backup_s3_access_key != "" && db_backup_s3_secret_key != "" ~}
       - "DB_BACKUP_S3=1"
       - "DB_BACKUP_S3_BUCKET=${db_backup_s3_bucket}"
       - "DB_BACKUP_S3_ACCESS_KEY=${db_backup_s3_access_key}"
       - "DB_BACKUP_S3_SECRET_KEY=${db_backup_s3_secret_key}"
+      - "DB_BACKUP_S3_REGION=${db_backup_s3_region}"
+      - "DB_BACKUP_S3_HOST=${db_backup_s3_host}"
+      - "DB_BACKUP_S3_RETENTION_FULL_TYPE=${db_backup_s3_retention_full_type}"
+      - "DB_BACKUP_S3_RETENTION_FULL=${db_backup_s3_retention_full}"
+      - "DB_BACKUP_S3_RETENTION_DIFF=${db_backup_s3_retention_diff}"
       %{~ endif ~}
       %{~ if storage_device_backup != "" ~}
       - "DB_BACKUP_LOCAL=1"
+      - "DB_BACKUP_LOCAL_RETENTION_FULL_TYPE=${db_backup_local_retention_full_type}"
+      - "DB_BACKUP_LOCAL_RETENTION_FULL=${db_backup_local_retention_full}"
+      - "DB_BACKUP_LOCAL_RETENTION_DIFF=${db_backup_local_retention_diff}"
+      %{~ endif ~}
+      %{~ if postgres_stop_timeout != "" ~}
+      - "POSTGRES_STOP_TIMEOUT=${postgres_stop_timeout}"
       %{~ endif ~}
       %{~ if postgres_extra_config != "" ~}
       - "DB_POSTGRES_EXTRA_CONFIG=${postgres_extra_config}"
@@ -184,7 +203,7 @@ configure_ufw
 if [[ "$${SSL_ENABLE}" == "true" ]]; then
   lego_run_hook_script > ~rds/lego_run_hook.sh
   chmod +x ~rds/lego_run_hook.sh
-  lego_setup_dns "/storage/data/ssl" "$${SSL_EMAIL}" "$${SSL_DOMAINS}" "$${SSL_DNS_PROVIDER}" "$(readlink -f ~rds/lego_run_hook.sh)" "https://acme-staging-v02.api.letsencrypt.org/directory"
+  lego_setup_dns "/storage/data/ssl" "$${SSL_EMAIL}" "$${SSL_DOMAINS}" "$${SSL_DNS_PROVIDER}" "$(readlink -f ~rds/lego_run_hook.sh)" "$${SSL_ACME_SERVER}"
 fi
 
 mkdir -p "/opt/dockerfiles/${db_instance_name}"
@@ -203,7 +222,9 @@ systemctl enable rds@${db_instance_name}
 systemctl start rds@${db_instance_name}
 
 systemctl enable rds-backup-full@${db_instance_name}.timer
+systemctl start rds-backup-full@${db_instance_name}.timer
 systemctl enable rds-backup-incr@${db_instance_name}.timer
+systemctl start rds-backup-incr@${db_instance_name}.timer
 
 # enable automatic system updates
 systemctl start unattended-upgrades

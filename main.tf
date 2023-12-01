@@ -12,19 +12,35 @@ locals {
     backup_full_calendar = var.backup_full_calendar
     backup_incr_calendar = var.backup_incr_calendar
 
-    db_backup_s3_bucket          = var.backup_s3_bucket == null ? "" : var.backup_s3_bucket
-    db_backup_s3_access_key      = var.backup_s3_access_key == null ? "" : var.backup_s3_access_key
-    db_backup_s3_secret_key      = var.backup_s3_secret_key == null ? "" : var.backup_s3_secret_key
+    db_backup_s3_bucket     = var.backup_s3_bucket == null ? "" : var.backup_s3_bucket
+    db_backup_s3_access_key = var.backup_s3_access_key == null ? "" : var.backup_s3_access_key
+    db_backup_s3_secret_key = var.backup_s3_secret_key == null ? "" : var.backup_s3_secret_key
+    db_backup_s3_region     = var.backup_s3_region == null ? "" : var.backup_s3_region
+    db_backup_s3_host       = var.backup_s3_host == null ? "" : var.backup_s3_host
+
+    db_backup_s3_retention_full_type = var.backup_s3_retention_full_type
+    db_backup_s3_retention_full      = var.backup_s3_retention_full
+    db_backup_s3_retention_diff      = var.backup_s3_retention_diff
+
+    db_backup_local_retention_full_type = var.backup_local_retention_full_type
+    db_backup_local_retention_full      = var.backup_local_retention_full
+    db_backup_local_retention_diff      = var.backup_local_retention_diff
+
     backup_encryption_passphrase = var.backup_encryption_passphrase == null ? "" : var.backup_encryption_passphrase
     mode                         = var.mode == null ? "" : var.mode
 
-    databases = var.databases
+    databases             = var.databases
+    environment_variables = var.environment_variables
+    postgres_stop_timeout = var.postgres_stop_timeout
+
+    db_admin_password = var.db_admin_password
 
     ssl_enable              = var.ssl_enable
     ssl_email               = var.ssl_email
     ssl_domains             = var.ssl_domains
     ssl_dns_provider        = var.ssl_dns_provider
     ssl_dns_provider_config = var.ssl_dns_provider_config
+    ssl_acme_server         = var.ssl_acme_server
     postgres_major_version  = var.postgres_major_version
     postgres_extra_config   = var.postgres_extra_config == null ? "" : var.postgres_extra_config
 

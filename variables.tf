@@ -59,6 +59,64 @@ variable "backup_s3_secret_key" {
   default     = null
 }
 
+variable "backup_s3_region" {
+  type        = string
+  description = "AWS region for S3 backups."
+  default     = "eu-central-1"
+}
+
+variable "backup_s3_host" {
+  type        = string
+  description = "AWS host S3 backups."
+  default     = "s3.eu-central-1.amazonaws.com"
+}
+
+variable "backup_s3_retention_full_type" {
+  type        = string
+  description = "AWS S3 backups retention policy type [count, time]. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-full"
+  default     = "count"
+
+  validation {
+    condition     = var.backup_s3_retention_full_type != "count" || var.backup_s3_retention_full_type != "time"
+    error_message = "only 'count' or 'time' is supported"
+  }
+}
+
+variable "backup_s3_retention_full" {
+  type        = number
+  description = "AWS S3 backups full backup retention count/time. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-full"
+  default     = 7
+}
+
+variable "backup_s3_retention_diff" {
+  type        = number
+  description = "AWS S3 backup number of differential backups to retain. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-diff"
+  default     = 4
+}
+
+variable "backup_local_retention_full_type" {
+  type        = string
+  description = "Local backups retention policy type [count, time]. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-full"
+  default     = "count"
+
+  validation {
+    condition     = var.backup_local_retention_full_type != "count" || var.backup_local_retention_full_type != "time"
+    error_message = "only 'count' or 'time' is supported"
+  }
+}
+
+variable "backup_local_retention_full" {
+  type        = number
+  description = "Local backups full backup retention count/time. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-full"
+  default     = 7
+}
+
+variable "backup_local_retention_diff" {
+  type        = number
+  description = "Local backup number of differential backups to retain. See https://pgbackrest.org/configuration.html#section-repository/option-repo-retention-diff"
+  default     = 4
+}
+
 variable "backup_full_calendar" {
   type        = string
   description = "systemd timer spec for full backups"
@@ -73,7 +131,22 @@ variable "backup_incr_calendar" {
 
 variable "databases" {
   type        = list(object({ id : string, user : string, password : string }))
+  sensitive   = true
   description = "A list of databases to create when the instance is initialized, for example: `{ id : \"database1\", user : \"user1\", password : \"password1\" }`. Changing `user` and `password` is supported at any time, the provided config is translated into an config for the Solidblocks RDS PostgreSQL module (https://pellepelster.github.io/solidblocks/rds/index.html), please see https://pellepelster.github.io/solidblocks/rds/index.html#databases for more details of the database configuration."
+}
+
+variable "environment_variables" {
+  type        = map(string)
+  description = "A list environment variables to pass to the PostgreSQL  docker container"
+  default     = {}
+}
+
+
+variable "db_admin_password" {
+  type        = string
+  sensitive   = true
+  default     = ""
+  description = "The database admin password. Username is always rds"
 }
 
 variable "postgres_major_version" {
@@ -91,6 +164,12 @@ variable "postgres_extra_config" {
   type        = string
   description = "Extra postgres configurations options for the postgresql.conf, see also https://pellepelster.github.io/solidblocks/rds/index.html#global -> DB_POSTGRES_EXTRA_CONFIG"
   default     = null
+}
+
+variable "postgres_stop_timeout" {
+  type        = number
+  description = "shutdown timeout for the postgres database in seconds, see also https://www.postgresql.org/docs/current/app-pg-ctl.html"
+  default     = 60
 }
 
 variable "extra_user_data" {
@@ -172,6 +251,13 @@ variable "ssl_dns_provider_config" {
   default     = {}
 }
 
+variable "ssl_acme_server" {
+  type = string
+  description = "The URL of the ACME Server to use. Defaults to Let's Encrypt production environment."
+  # LetsEncrypt Staging: https://acme-staging-v02.api.letsencrypt.org/directory
+  default = "https://acme-v02.api.letsencrypt.org/directory"
+}
+
 variable "backup_encryption_passphrase" {
   type        = string
   description = "If set the backups will be encrypted using this passphrase"
@@ -187,12 +273,12 @@ variable "solidblocks_base_url" {
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.21"
+  default     = "v0.2.3"
 }
 
 variable "solidblocks_rds_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.1.21"
+  default     = "v0.2.3"
 }
 
