@@ -47,6 +47,12 @@ variable "backup_s3_bucket" {
   default     = null
 }
 
+variable "restore_pitr" {
+  type        = string
+  description = "Point in time to recover to, using the recovery type `time` as defined in https://pgbackrest.org/command.html#command-restore. Format should be `YYYY-MM-dd HH:mm:ssz` Please be aware that the server hosting the database might be in a different timezone, so always include the timezone when specifying PITR times `date +\"%Y-%m-%d %H:%M:%S%z\"`"
+  default     = null
+}
+
 variable "backup_s3_access_key" {
   type        = string
   description = "AWS access key for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
@@ -216,13 +222,19 @@ variable "network_id" {
 
 variable "network_ip" {
   type        = string
-  description = "ip address in the attached network"
+  description = "ip address in the attached network. when an ip address is provided the database server will automatically be bound to this ip and will not be exposed on any other network interfaces"
   default     = null
 }
 
 variable "ssl_enable" {
   type        = bool
   description = "enable automatic ssl certificate creation using LetsEncrypt"
+  default     = false
+}
+
+variable "firewall_disable" {
+  type        = bool
+  description = "disable automatic firewall configuration"
   default     = false
 }
 
@@ -252,10 +264,10 @@ variable "ssl_dns_provider_config" {
 }
 
 variable "ssl_acme_server" {
-  type = string
+  type        = string
   description = "The URL of the ACME Server to use. Defaults to Let's Encrypt production environment."
   # LetsEncrypt Staging: https://acme-staging-v02.api.letsencrypt.org/directory
-  default = "https://acme-v02.api.letsencrypt.org/directory"
+  default     = "https://acme-v02.api.letsencrypt.org/directory"
 }
 
 variable "backup_encryption_passphrase" {

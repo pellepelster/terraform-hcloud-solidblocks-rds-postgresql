@@ -12,6 +12,8 @@ locals {
     backup_full_calendar = var.backup_full_calendar
     backup_incr_calendar = var.backup_incr_calendar
 
+    db_restore_pitr = var.restore_pitr == null ? "" : var.restore_pitr
+
     db_backup_s3_bucket     = var.backup_s3_bucket == null ? "" : var.backup_s3_bucket
     db_backup_s3_access_key = var.backup_s3_access_key == null ? "" : var.backup_s3_access_key
     db_backup_s3_secret_key = var.backup_s3_secret_key == null ? "" : var.backup_s3_secret_key
@@ -35,7 +37,9 @@ locals {
 
     db_admin_password = var.db_admin_password
 
+    network_ip              = var.network_ip == null ? "" : var.network_ip
     ssl_enable              = var.ssl_enable
+    ufw_disable             = var.firewall_disable
     ssl_email               = var.ssl_email
     ssl_domains             = var.ssl_domains
     ssl_dns_provider        = var.ssl_dns_provider

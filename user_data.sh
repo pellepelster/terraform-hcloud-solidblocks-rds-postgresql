@@ -11,6 +11,7 @@ STORAGE_DEVICE_DATA="${storage_device_data}"
 
 # ssl config
 SSL_ENABLE="${ssl_enable}"
+UFW_DISABLE="${ufw_disable}"
 SSL_EMAIL="${ssl_email}"
 SSL_DNS_PROVIDER="${ssl_dns_provider}"
 SSL_ACME_SERVER="${ssl_acme_server}"
@@ -154,6 +155,7 @@ services:
       - "DB_BACKUP_S3_RETENTION_FULL_TYPE=${db_backup_s3_retention_full_type}"
       - "DB_BACKUP_S3_RETENTION_FULL=${db_backup_s3_retention_full}"
       - "DB_BACKUP_S3_RETENTION_DIFF=${db_backup_s3_retention_diff}"
+      - "DB_RESTORE_PITR=${db_restore_pitr}"
       %{~ endif ~}
       %{~ if storage_device_backup != "" ~}
       - "DB_BACKUP_LOCAL=1"
@@ -171,7 +173,7 @@ services:
       - "DB_BACKUP_ENCRYPTION_PASSPHRASE=${backup_encryption_passphrase}"
       %{~ endif ~}
     ports:
-      - "5432:5432"
+      - "%{~ if network_ip != "" ~}${network_ip}:%{~ endif ~}5432:5432"
     volumes:
       - "/storage/data:/storage/data"
       %{~ if storage_device_backup != "" ~}
@@ -183,8 +185,6 @@ services:
       %{~ endif ~}
 EOF
 }
-
-
 
 groupadd --gid 10000 rds
 useradd --gid rds --uid 10000 rds --create-home
@@ -198,7 +198,9 @@ storage_mount "$${STORAGE_DEVICE_BACKUP}" "/storage/backup"
 chown -R rds:rds "/storage"
 
 install_prerequisites
+if [[ "$${UFW_DISABLE}" != "true" ]]; then
 configure_ufw
+fi
 
 if [[ "$${SSL_ENABLE}" == "true" ]]; then
   lego_run_hook_script > ~rds/lego_run_hook.sh
