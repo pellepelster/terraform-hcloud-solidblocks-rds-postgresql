@@ -139,6 +139,9 @@ services:
       - "DB_USERNAME_${database.id}=${database.user}"
       - "DB_PASSWORD_${database.id}=${database.password}"
       %{~ endfor ~}
+      %{~ if mode != "" ~}
+      DB_MODE: "${mode}"
+      %{~ endif ~}
       %{~ if db_admin_password != "" ~}
       - "DB_ADMIN_PASSWORD=${db_admin_password}"
       %{~ endif ~}
@@ -156,6 +159,11 @@ services:
       - "DB_BACKUP_S3_RETENTION_FULL=${db_backup_s3_retention_full}"
       - "DB_BACKUP_S3_RETENTION_DIFF=${db_backup_s3_retention_diff}"
       - "DB_RESTORE_PITR=${db_restore_pitr}"
+      %{~ endif ~}
+      %{~ if db_backup_gcs_bucket != "" && db_backup_gcs_service_key_base64 != "" ~}
+      - "DB_BACKUP_GCS=1"
+      - "DB_BACKUP_GCS_BUCKET=${db_backup_gcs_bucket}"
+      - "DB_BACKUP_GCS_SERVICE_KEY_BASE64=${db_backup_gcs_service_key_base64}"
       %{~ endif ~}
       %{~ if storage_device_backup != "" ~}
       - "DB_BACKUP_LOCAL=1"

@@ -41,6 +41,18 @@ variable "mode" {
   }
 }
 
+variable "db_backup_gcs_bucket" {
+  type        = string
+  description = "Name of the Google Cloud storage bucket"
+  default     = null
+}
+
+variable "db_backup_gcs_service_key" {
+  type        = string
+  description = "content of the service key json file with appropriate permissions to write to the `db_backup_gcs_bucket` bucket."
+  default     = null
+}
+
 variable "backup_s3_bucket" {
   type        = string
   description = "AWS bucket name for S3 backups. To enable S3 backups `backup_s3_bucket`, `backup_s3_access_key` and `backup_s3_secret_key` have to be provided."
@@ -285,12 +297,11 @@ variable "solidblocks_base_url" {
 variable "solidblocks_cloud_init_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.2.3"
+  default     = "v0.2.5"
 }
 
 variable "solidblocks_rds_version" {
   type        = string
   description = "used for integration tests to inject test versions"
-  default     = "v0.2.3"
+  default     = "v0.2.5"
 }
-
